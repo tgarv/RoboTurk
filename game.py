@@ -30,7 +30,7 @@ class Game:
                         player = self.player2
                     print(self.board)
                     print("Player " + str(self.current_turn) + "'s turn")
-                    move = player.get_move()
+                    move = player.get_move(self.board)
                     if (move == "auto_move" or move == ""):
                         result = self.engine.play(self.board, chess.engine.Limit(time=1.00))
                         move = result.move
@@ -50,6 +50,6 @@ class Game:
 
 if __name__ == "__main__":
     player1 = player.Player("Test1", player.Player.HUMAN)
-    player2 = player.Player("Test2", player.Player.HUMAN)
+    player2 = player.Player("Test2", player.Player.COMPUTER)
     game = Game(player1, player2)
     game.play()
