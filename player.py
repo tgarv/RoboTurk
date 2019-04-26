@@ -25,3 +25,6 @@ class Player:
                 except:
                     return None
             return move
+
+    def is_human(self):
+        return self.type == self.HUMAN
