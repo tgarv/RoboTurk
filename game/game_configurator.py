@@ -1,4 +1,6 @@
 import player
+import human_player
+import computer_player
 import game
 
 class GameConfigurator():
@@ -19,9 +21,10 @@ class GameConfigurator():
                 if not player.Player.is_valid_type(player_type):
                     raise Exception
             except Exception:
+                player_type = None
                 print("Invalid player type - try again")
             
         if player_type == player.Player.COMPUTER:
             difficulty = float(input("Select difficulty for %s player (1-10) \n" % (color)))
-            return player.Player(color, player_type, engine_time_limit=0.2 * difficulty)
-        return player.Player(color, player_type)
+            return computer_player.ComputerPlayer(color, player_type, engine_time_limit=0.2 * difficulty)
+        return human_player.HumanPlayer(color, player_type)
