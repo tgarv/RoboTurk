@@ -1,8 +1,10 @@
 import chess.engine
 
 class Player:
-    COMPUTER = 1
-    HUMAN = 2
+    # @TODO use Player as base class, add subclasses for types
+    HUMAN = 1
+    COMPUTER = 2
+
     def __init__(self, name, type, engine_time_limit = 1.00):
         self.name = name
         self.type = type

@@ -1,7 +1,7 @@
 import chess
 import chess.engine
-import player
 import head
+import game_configurator
 
 class Game:
     def __init__(self, player_white, player_black):
@@ -62,7 +62,6 @@ class Game:
         self.head.set_magnet(False)
 
 if __name__ == "__main__":
-    player1 = player.Player("White", player.Player.COMPUTER, engine_time_limit=0.001)
-    player2 = player.Player("Black", player.Player.COMPUTER, engine_time_limit=0.001)
-    game = Game(player1, player2)
+    configurator = game_configurator.GameConfigurator()
+    game = configurator.get_game()
     game.play()
