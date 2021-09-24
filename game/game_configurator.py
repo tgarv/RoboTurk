@@ -27,4 +27,5 @@ class GameConfigurator():
         if player_type == player.Player.COMPUTER:
             difficulty = float(input("Select difficulty for %s player (1-10) \n" % (color)))
             return computer_player.ComputerPlayer(color, player_type, engine_time_limit=0.2 * difficulty)
+        
         return human_player.HumanPlayer(color, player_type)
