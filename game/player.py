@@ -12,6 +12,12 @@ class Player:
         self.engine_time_limit = engine_time_limit
 
     def get_move(self, board):
+        """
+        Get a move from the player. If the move is calculated by the engine, then the robot needs to move the piece. If the move is made by the player, then the robot does not need to move it.
+
+        :param board: The board object for the current game
+        :returns: A tuple of (Move, bool), giving the move to make and whether or not the robot needs to move the piece.
+        """
         raise Exception("Can't call get_move() on base Player class")
 
     def is_human(self):
