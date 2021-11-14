@@ -1,8 +1,8 @@
 import chess.engine
 import player
 
-class HumanPlayer(player.Player):
-    def get_move(self, board):
+class HumanCliPlayer(player.Player):
+    def get_move(self, board, led_manager = None):
         requires_robot_to_move = True
         move_input = input("Enter your move in UCI format:\n")
         if (move_input == "auto_move" or move_input == ""):

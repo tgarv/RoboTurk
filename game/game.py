@@ -2,15 +2,28 @@ import chess
 import chess.engine
 import head
 import game_configurator
+import command_queue
+import led_manager
+import server
+
+import threading
 
 class Game:
+    # @TODO clean this up
+    STOCKFISH_LOCATION_RPI = "/usr/games/stockfish"
+    STOCKFISH_LOCATION_MACOS = "/usr/local/bin/stockfish"
+
     def __init__(self, player_white, player_black, board = None, engine = None):
         self.player_white = player_white
         self.player_black = player_black
         self.current_turn = 1
         self.board = board if board else chess.Board()
-        self.engine = engine if engine else chess.engine.SimpleEngine.popen_uci("/usr/local/bin/stockfish")
+        self.engine = engine if engine else chess.engine.SimpleEngine.popen_uci(self.STOCKFISH_LOCATION_RPI)
         self.head = head.Head()
+        self.led_manager = led_manager.LedManager()
+        self.led_manager.initialize_checkerboard()
+        
+        threading.Thread(target=lambda: server.app.run(host="0.0.0.0", use_reloader=False)).start()
     
     def play(self):
         """The main game loop - play through each turn until a winner is determined"""
@@ -36,10 +49,13 @@ class Game:
             print(info["score"])
             print(self.board)
             print(player.name + "'s turn")
-            (move, requires_robot_to_move) = player.get_move(self.board)
+            (move, requires_robot_to_move) = player.get_move(self.board, self.led_manager)
+            self.led_manager.initialize_checkerboard()
             if not move or not (move in self.board.legal_moves):
                 print("Illegal move - try again")
             else:
+                self.led_manager.illuminate_square(chess.square_name(move.from_square))
+                self.led_manager.illuminate_square(chess.square_name(move.to_square), (100, 0, 0))
                 is_capture = self.board.is_capture(move)
                 if requires_robot_to_move:
                     # If this move was calculated by the engine or comes from a remote game, then the robot needs to move the piece
