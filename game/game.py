@@ -55,7 +55,7 @@ class Game:
                 print("Illegal move - try again")
             else:
                 self.led_manager.illuminate_square(chess.square_name(move.from_square))
-                self.led_manager.illuminate_square(chess.square_name(move.to_square), (100, 0, 0))
+                self.led_manager.illuminate_square(chess.square_name(move.to_square), (255, 0, 0))
                 is_capture = self.board.is_capture(move)
                 if requires_robot_to_move:
                     # If this move was calculated by the engine or comes from a remote game, then the robot needs to move the piece
