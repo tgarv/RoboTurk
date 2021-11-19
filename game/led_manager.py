@@ -13,7 +13,7 @@ class LedManager():
 		self.number_of_leds_per_quadrant = 256
 		
 		self.pixels = neopixel.NeoPixel(
-			board.D21, self.number_of_leds_per_quadrant * 4, brightness=0.2, auto_write=False, pixel_order="GRB"
+			board.D21, self.number_of_leds_per_quadrant * 4, brightness=0.1, auto_write=False, pixel_order="GRB"
 		)
 		
 		# This one was hard to name - it's the number of LEDs on one side of a square
@@ -28,7 +28,8 @@ class LedManager():
 		self.light_colored_squares = set(["a1","a3","a5","a7","b2","b4","b6","b8","c1","c3","c5","c7","d2","d4","d6","d8","e1","e3","e5","e7","f2","f4","f6","f8","g1","g3","g5","g7","h2","h4","h6","h8"])
 
 		#TODO make these configurable
-		self.piece_color_1 = (255, 255, 0)
+		# self.piece_color_1 = (255, 255, 0)
+		self.piece_color_1 = (255, 0, 255)
 		self.piece_color_2 = (0, 255, 255)
 
 		# Since each matrix is rotated differently (for wiring purposes), this dict maintains the mapping from a quadrant's local coordinate system to the global board numbering system
@@ -149,10 +150,10 @@ class LedManager():
 			for square_number, piece in piece_map.items():
 				square_name = chess.SQUARE_NAMES[square_number]
 				is_color_1 = piece.color == chess.WHITE
-				self.illuminate_square(square_name, self.piece_color_1 if is_color_1 else self.piece_color_2, self.LIGHTING_TYPE_INNER)
+				self.illuminate_square(square_name, self.piece_color_1 if is_color_1 else self.piece_color_2, self.LIGHTING_TYPE_INNER, False)
 		self.pixels.show()
 		
-	def illuminate_square(self, square, color = (0, 255, 0), type = 2):
+	def illuminate_square(self, square, color = (0, 255, 0), type = 2, show_immediately = True):
 		leds = self.leds_for_square[square]
 		if leds is None:
 			return
@@ -166,4 +167,5 @@ class LedManager():
 		for i in indices_to_illuminate:
 			led = leds[i]
 			self.pixels[led] = color
-		self.pixels.show()
+		if show_immediately:
+			self.pixels.show()
