@@ -21,7 +21,7 @@ class Game:
         self.engine = engine if engine else chess.engine.SimpleEngine.popen_uci(self.STOCKFISH_LOCATION_RPI)
         self.head = head.Head()
         self.led_manager = led_manager.LedManager()
-        self.led_manager.initialize_checkerboard()
+        self.led_manager.initialize_checkerboard(self.board.piece_map())
         
         threading.Thread(target=lambda: server.app.run(host="0.0.0.0", use_reloader=False)).start()
     
@@ -50,8 +50,8 @@ class Game:
             print(self.board)
             print(player.name + "'s turn")
             (move, requires_robot_to_move) = player.get_move(self.board, self.led_manager)
-	    # TODO pass in all the current pieces' squares so we can illuminate them with the player color
-            self.led_manager.initialize_checkerboard()
+	    
+            self.led_manager.initialize_checkerboard(self.board.piece_map())
             if not move or not (move in self.board.legal_moves):
                 print("Illegal move - try again")
             else:

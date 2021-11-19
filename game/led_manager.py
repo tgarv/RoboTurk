@@ -1,6 +1,7 @@
 import board
 import neopixel
 import math
+import chess
 
 class LedManager():
 	LIGHTING_TYPE_ALL = 1
@@ -28,7 +29,7 @@ class LedManager():
 
 		#TODO make these configurable
 		self.piece_color_1 = (255, 255, 0)
-		self.piece_color_1 = (0, 255, 255)
+		self.piece_color_2 = (0, 255, 255)
 
 		# Since each matrix is rotated differently (for wiring purposes), this dict maintains the mapping from a quadrant's local coordinate system to the global board numbering system
 		self.coordinates_for_square = {
@@ -136,7 +137,7 @@ class LedManager():
 				square_name = quadrant_mapping[coordinates]
 				self.leds_for_square[square_name] = leds
 		
-	def initialize_checkerboard(self):
+	def initialize_checkerboard(self, piece_map = None):
 		for square in self.leds_for_square.keys():
 			light = square in self.light_colored_squares
 			# This will initialize a checkerboard pattern
@@ -144,9 +145,14 @@ class LedManager():
 			leds = self.leds_for_square[square]
 			for led in leds:
 				self.pixels[led] = color
+		if piece_map is not None:
+			for square_number, piece in piece_map.items():
+				square_name = chess.SQUARE_NAMES[square_number]
+				is_color_1 = piece.color == chess.WHITE
+				self.illuminate_square(square_name, self.piece_color_1 if is_color_1 else self.piece_color_2, self.LIGHTING_TYPE_INNER)
 		self.pixels.show()
 		
-	def illuminate_square(self, square, color = (0, 255, 0), type=2):
+	def illuminate_square(self, square, color = (0, 255, 0), type = 2):
 		leds = self.leds_for_square[square]
 		if leds is None:
 			return
