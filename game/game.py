@@ -50,6 +50,7 @@ class Game:
             print(self.board)
             print(player.name + "'s turn")
             (move, requires_robot_to_move) = player.get_move(self.board, self.led_manager)
+	    # TODO pass in all the current pieces' squares so we can illuminate them with the player color
             self.led_manager.initialize_checkerboard()
             if not move or not (move in self.board.legal_moves):
                 print("Illegal move - try again")
