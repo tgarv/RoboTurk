@@ -5,6 +5,9 @@ import server
 
 import threading
 import time
+import os
+import json
+import sys
 
 class BoardSpaceConfigurator():
     def __init__(self):
@@ -20,9 +23,12 @@ class BoardSpaceConfigurator():
         self.led_manager = led_manager.LedManager()
         threading.Thread(target=lambda: server.app.run(host="0.0.0.0", use_reloader=False)).start()
     
-    def configure_board_squares(self):
-        new_mapping = {}
-        for square in self.all_squares:
+    def configure_board_squares(self, spaces = None):
+        new_mapping = self.sensor_space_mapping
+        if not spaces:
+            new_mapping = {} # Start from scratch
+            spaces = self.all_squares
+        for square in spaces:
             self.led_manager.initialize_checkerboard()
             self.led_manager.illuminate_square(square)
             self.queue.reset_queue()
@@ -33,6 +39,7 @@ class BoardSpaceConfigurator():
                 input_value = None
                 attempts_remaining = 20
                 while input_value is None and attempts_remaining > 0:
+                    self.queue.reset_queue()
                     attempts_remaining -= 1
                     # TODO store previous, and if the new one is the same as the previous then skip it (it's likely due to bounce or a misplaced piece)
                     time.sleep(0.25)
@@ -48,15 +55,26 @@ class BoardSpaceConfigurator():
                     if user_input == "skip":
                         break
                     else:
+                        self.queue.reset_queue()
                         continue
                 else:
                     square_value = board_id + ":" + space_id
                     if square_value in new_mapping:
-                        print("Value %s already exists in mapping for square %s" % (square_value, square))
+                        print("\n\n\nERROR:Value %s already exists in mapping for square %s\n\n\n" % (square_value, square))
                     print("Got value %s for square %s" % (square_value, square))
                     new_mapping[square_value] = square
                     time.sleep(1)
+        print("\n\n NEW MAPPING \n\n")
+        print(new_mapping)
+        write_to_file = input("Write new mapping to file?")
+        if write_to_file == "yes":
+            with open(os.path.join(os.path.dirname(__file__), "sensor_space_mapping.json"), "w") as file:
+                json.dump(new_mapping, file)
 
 if __name__ == "__main__":
     configurator = BoardSpaceConfigurator()
-    configurator.configure_board_squares()
+    if len(sys.argv) > 1:
+        spaces = sys.argv[1]
+        configurator.configure_board_squares(spaces.split(","))
+    else:
+        configurator.configure_board_squares()
