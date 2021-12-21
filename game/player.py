@@ -8,11 +8,13 @@ class Player:
     HUMAN_BOARD = 3
     # In the future, we would have even more granular types: remote player (via chess.com or lichess, maybe?); human player via robotic board (current "human" player is just via CLI)
 
-    def __init__(self, name, type, engine_time_limit = 1.00, engine = None):
+    def __init__(self, name, type, difficulty = 1, engine = None):
         self.name = name
         self.type = type
         self.engine = engine if engine else chess.engine.SimpleEngine.popen_uci(self.STOCKFISH_LOCATION_RPI)
-        self.engine_time_limit = engine_time_limit
+        self.difficulty = difficulty
+        self.engine.configure({"Skill Level": self.difficulty})
+
 
     def get_move(self, board, led_manager = None):
         """

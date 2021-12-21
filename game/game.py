@@ -45,7 +45,7 @@ class Game:
         player = self.get_current_player()
         move_complete = False
         while not move_complete:
-            info = self.engine.analyse(self.board, chess.engine.Limit(time=0.01))
+            info = self.engine.analyse(self.board, chess.engine.Limit(time=0.1))
             print(info["score"])
             print(self.board)
             print(player.name + "'s turn")
@@ -101,7 +101,8 @@ class Game:
         # Move the head back to the capturing piece's location
         # Move the capturing piece to move.to_square
         if (is_capture):
-            print("Captured piece with type %s" % (self.board.piece_at(move.to_square).piece_type))
+            piece = self.board.piece_at(move.to_square)
+            print("Captured piece with type %s" % (piece.piece_type if piece is not None else chess.PAWN))
 
         # TODO also need to implement promotions
         # This is tricky - do we need an extra of every piece type? (e.g. if you promote to Queen but your Queen still exists, where do we get the extra Queen from?)
