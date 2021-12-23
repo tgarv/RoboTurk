@@ -2,14 +2,16 @@ from flask import Flask, request
 import logging
 import command_queue
 
-#log = logging.getLogger('werkzeug')
-#log.setLevel(logging.ERROR)
+# log = logging.getLogger('werkzeug')
+# log.setLevel(logging.ERROR)
 
 app = Flask(__name__)
+
 
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
+
 
 @app.route("/update_positions", methods=["POST"])
 def update_positions():

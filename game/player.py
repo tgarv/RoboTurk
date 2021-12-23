@@ -1,22 +1,26 @@
 import chess.engine
 
+import config
+
+
 class Player:
-    STOCKFISH_LOCATION_RPI = "/usr/games/stockfish"
-    STOCKFISH_LOCATION_MACOS = "/usr/local/bin/stockfish"
     HUMAN = 1
     COMPUTER = 2
     HUMAN_BOARD = 3
     # In the future, we would have even more granular types: remote player (via chess.com or lichess, maybe?); human player via robotic board (current "human" player is just via CLI)
 
-    def __init__(self, name, type, difficulty = 1, engine = None):
+    def __init__(self, name, type, difficulty=1, engine=None):
         self.name = name
         self.type = type
-        self.engine = engine if engine else chess.engine.SimpleEngine.popen_uci(self.STOCKFISH_LOCATION_MACOS)
+        self.engine = (
+            engine
+            if engine
+            else chess.engine.SimpleEngine.popen_uci(config.get_stockfish_location())
+        )
         self.difficulty = difficulty
         self.engine.configure({"Skill Level": self.difficulty})
 
-
-    def get_move(self, board, led_manager = None):
+    def get_move(self, board, led_manager=None):
         """
         Get a move from the player. If the move is calculated by the engine, then the robot needs to move the piece. If the move is made by the player, then the robot does not need to move it.
 

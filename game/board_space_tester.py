@@ -6,13 +6,16 @@ import server
 import threading
 import time
 
-class BoardSpaceTester():
+
+class BoardSpaceTester:
     def __init__(self):
         self.sensor_space_mapping = sensor_space_mapping.MAPPING
         self.queue = command_queue.CommandQueue()
         self.led_manager = led_manager.LedManager()
-        threading.Thread(target=lambda: server.app.run(host="0.0.0.0", use_reloader=False)).start()
-    
+        threading.Thread(
+            target=lambda: server.app.run(host="0.0.0.0", use_reloader=False)
+        ).start()
+
     def test(self):
         self.led_manager.initialize_checkerboard()
         while True:
@@ -29,6 +32,7 @@ class BoardSpaceTester():
                 self.led_manager.illuminate_square(square, color)
                 time.sleep(0.25)
                 self.queue.reset_queue()
+
 
 if __name__ == "__main__":
     tester = BoardSpaceTester()

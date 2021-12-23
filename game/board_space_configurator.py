@@ -9,7 +9,8 @@ import os
 import json
 import sys
 
-class BoardSpaceConfigurator():
+
+class BoardSpaceConfigurator:
     def __init__(self):
         self.sensor_space_mapping = sensor_space_mapping.MAPPING
         ranks = range(1, 9)
@@ -21,19 +22,26 @@ class BoardSpaceConfigurator():
         self.all_squares = all_squares
         self.queue = command_queue.CommandQueue()
         self.led_manager = led_manager.LedManager()
-        threading.Thread(target=lambda: server.app.run(host="0.0.0.0", use_reloader=False)).start()
-    
-    def configure_board_squares(self, spaces = None):
+        threading.Thread(
+            target=lambda: server.app.run(host="0.0.0.0", use_reloader=False)
+        ).start()
+
+    def configure_board_squares(self, spaces=None):
         new_mapping = self.sensor_space_mapping
         if not spaces:
-            new_mapping = {} # Start from scratch
+            new_mapping = {}  # Start from scratch
             spaces = self.all_squares
         for square in spaces:
             self.led_manager.initialize_checkerboard()
             self.led_manager.illuminate_square(square)
             self.queue.reset_queue()
-            current_value = self.sensor_space_mapping.get(square, "TODO") #TODO this is wrong, the dict is the other way around
-            print("Place a magnet for square %s; current value is %s" % (square, current_value))
+            current_value = self.sensor_space_mapping.get(
+                square, "TODO"
+            )  # TODO this is wrong, the dict is the other way around
+            print(
+                "Place a magnet for square %s; current value is %s"
+                % (square, current_value)
+            )
             square_value = None
             while square_value is None:
                 input_value = None
@@ -51,7 +59,9 @@ class BoardSpaceConfigurator():
                         input_value = None
                         continue
                 if attempts_remaining == 0:
-                    user_input = input("No mapping found; press Enter to try again, or type \"skip\" to skip this square")
+                    user_input = input(
+                        'No mapping found; press Enter to try again, or type "skip" to skip this square'
+                    )
                     if user_input == "skip":
                         break
                     else:
@@ -60,7 +70,10 @@ class BoardSpaceConfigurator():
                 else:
                     square_value = board_id + ":" + space_id
                     if square_value in new_mapping:
-                        print("\n\n\nERROR:Value %s already exists in mapping for square %s\n\n\n" % (square_value, square))
+                        print(
+                            "\n\n\nERROR:Value %s already exists in mapping for square %s\n\n\n"
+                            % (square_value, square)
+                        )
                     print("Got value %s for square %s" % (square_value, square))
                     new_mapping[square_value] = square
                     time.sleep(1)
@@ -68,8 +81,12 @@ class BoardSpaceConfigurator():
         print(new_mapping)
         write_to_file = input("Write new mapping to file?")
         if write_to_file == "yes":
-            with open(os.path.join(os.path.dirname(__file__), "sensor_space_mapping.json"), "w") as file:
+            with open(
+                os.path.join(os.path.dirname(__file__), "sensor_space_mapping.json"),
+                "w",
+            ) as file:
                 json.dump(new_mapping, file)
+
 
 if __name__ == "__main__":
     configurator = BoardSpaceConfigurator()

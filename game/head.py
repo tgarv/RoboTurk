@@ -11,6 +11,7 @@ class Head:
         self.position_y = y
         print("Moving head (%s, %s)" % (delta_x, delta_y))
         # Move motors here
+        # TODO need much smarter logic about moving to the edge of a square, avoiding other pieces, etc.
 
     def set_magnet(self, power):
         # Set magnet's power status to on or off depending on power

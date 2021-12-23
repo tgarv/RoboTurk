@@ -6,11 +6,12 @@ import sensor_space_mapping
 from led_manager import LedManager
 import time
 
+
 class HumanBoardPlayer(player.Player):
-    def get_move(self, board, led_manager = None):
+    def get_move(self, board, led_manager=None):
         legal_moves = board.legal_moves
         queue = command_queue.CommandQueue()
-        queue.reset_queue() # TODO not sure this is a good idea
+        queue.reset_queue()  # TODO not sure this is a good idea
         from_square = None
         print("Waiting for move")
         while from_square is None:
@@ -23,14 +24,26 @@ class HumanBoardPlayer(player.Player):
                 queue.reset_queue()
                 from_square = None
             else:
-                from_square = sensor_space_mapping.MAPPING.get(board_id + ":" + space_id, None)
+                from_square = sensor_space_mapping.MAPPING.get(
+                    board_id + ":" + space_id, None
+                )
             time.sleep(0.25)
-        
+
         if led_manager is not None:
             for legal_move in legal_moves:
                 if from_square == chess.square_name(legal_move.from_square):
-                    led_manager.illuminate_square(chess.square_name(legal_move.from_square), (255,0,255), LedManager.LIGHTING_TYPE_INNER, False)
-                    led_manager.illuminate_square(chess.square_name(legal_move.to_square), (0,0,255), LedManager.LIGHTING_TYPE_INNER, True)
+                    led_manager.illuminate_square(
+                        chess.square_name(legal_move.from_square),
+                        (255, 0, 255),
+                        LedManager.LIGHTING_TYPE_INNER,
+                        False,
+                    )
+                    led_manager.illuminate_square(
+                        chess.square_name(legal_move.to_square),
+                        (0, 0, 255),
+                        LedManager.LIGHTING_TYPE_INNER,
+                        True,
+                    )
 
         to_square = None
         while to_square is None:
@@ -43,9 +56,11 @@ class HumanBoardPlayer(player.Player):
                 queue.reset_queue()
                 to_square = None
             else:
-                to_square = sensor_space_mapping.MAPPING.get(board_id + ":" + space_id, None)
+                to_square = sensor_space_mapping.MAPPING.get(
+                    board_id + ":" + space_id, None
+                )
             time.sleep(0.25)
-            
+
         move = from_square + to_square
         print("Got move: " + move)
         try:
@@ -53,8 +68,7 @@ class HumanBoardPlayer(player.Player):
         except:
             return (None, False)
         return (move, True)
-        
-                
+
         # requires_robot_to_move = False
         # move_input = input("Enter your move in UCI format:\n")
         # if (move_input == "auto_move" or move_input == ""):

@@ -1,13 +1,15 @@
-class MockBoard():
+class MockBoard:
     D21 = None
+
     def __init__(self):
         pass
 
-class MockNeopixel():
+
+class MockNeopixel:
     def __init__(self):
         pass
 
-    class NeoPixel():
+    class NeoPixel:
         def __init__(self, foo, size, **kwargs):
             self.pixels = [0] * size
 
