@@ -1,0 +1,123 @@
+number_of_leds_per_quadrant = 256
+brightness = 0.1
+pixel_color_order = "GRB"
+
+# This is kind of a hack, but whatever. When we iterate through the neopixels and assign the global number to these "bucketed" values per square, it happens in a certain order, so we know that
+# certain indices correspond to the outer ring of LEDs vs the center square. Even though the LED matrices are rotated relative to one another, it doesn't matter because "inner ring" vs "outer ring"
+# is symmetrical in all 4 roations. If we ever wanted to do something like "hightlight top right corner", we would need to take rotation into account.
+indices_for_inner_leds = [5, 6, 9, 10]
+indices_for_outer_leds = [0, 1, 2, 3, 4, 7, 8, 11, 12, 13, 14, 15]
+
+# Since each matrix is rotated differently (for wiring purposes), this dict maintains the mapping from a quadrant's local coordinate system to the global board numbering system
+coordinates_for_square = {
+    1: {
+        (0, 0): "a1",
+        (0, 1): "a2",
+        (0, 2): "a3",
+        (0, 3): "a4",
+        (1, 0): "b1",
+        (1, 1): "b2",
+        (1, 2): "b3",
+        (1, 3): "b4",
+        (2, 0): "c1",
+        (2, 1): "c2",
+        (2, 2): "c3",
+        (2, 3): "c4",
+        (3, 0): "d1",
+        (3, 1): "d2",
+        (3, 2): "d3",
+        (3, 3): "d4",
+    },
+    2: {
+        (3, 0): "a5",
+        (2, 0): "a6",
+        (1, 0): "a7",
+        (0, 0): "a8",
+        (3, 1): "b5",
+        (2, 1): "b6",
+        (1, 1): "b7",
+        (0, 1): "b8",
+        (3, 2): "c5",
+        (2, 2): "c6",
+        (1, 2): "c7",
+        (0, 2): "c8",
+        (3, 3): "d5",
+        (2, 3): "d6",
+        (1, 3): "d7",
+        (0, 3): "d8",
+    },
+    3: {
+        (3, 3): "e5",
+        (3, 2): "e6",
+        (3, 1): "e7",
+        (3, 0): "e8",
+        (2, 3): "f5",
+        (2, 2): "f6",
+        (2, 1): "f7",
+        (2, 0): "f8",
+        (1, 3): "g5",
+        (1, 2): "g6",
+        (1, 1): "g7",
+        (1, 0): "g8",
+        (0, 3): "h5",
+        (0, 2): "h6",
+        (0, 1): "h7",
+        (0, 0): "h8",
+    },
+    4: {
+        (0, 3): "e1",
+        (1, 3): "e2",
+        (2, 3): "e3",
+        (3, 3): "e4",
+        (0, 2): "f1",
+        (1, 2): "f2",
+        (2, 2): "f3",
+        (3, 2): "f4",
+        (0, 1): "g1",
+        (1, 1): "g2",
+        (2, 1): "g3",
+        (3, 1): "g4",
+        (0, 0): "h1",
+        (1, 0): "h2",
+        (2, 0): "h3",
+        (3, 0): "h4",
+    },
+}
+
+# We could compute this - it's the "even" squares of the board - but just hardcode which ones are even. It's a set for that sweet O(1) lookup time.
+light_colored_squares = set(
+    [
+        "a1",
+        "a3",
+        "a5",
+        "a7",
+        "b2",
+        "b4",
+        "b6",
+        "b8",
+        "c1",
+        "c3",
+        "c5",
+        "c7",
+        "d2",
+        "d4",
+        "d6",
+        "d8",
+        "e1",
+        "e3",
+        "e5",
+        "e7",
+        "f2",
+        "f4",
+        "f6",
+        "f8",
+        "g1",
+        "g3",
+        "g5",
+        "g7",
+        "h2",
+        "h4",
+        "h6",
+        "h8",
+    ]
+)
