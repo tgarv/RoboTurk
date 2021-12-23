@@ -10,10 +10,6 @@ import threading
 
 
 class Game:
-    # @TODO clean this up
-    STOCKFISH_LOCATION_RPI = "/usr/games/stockfish"
-    STOCKFISH_LOCATION_MACOS = "/usr/local/bin/stockfish"
-
     def __init__(self, player_white, player_black, board=None, engine=None):
         self.player_white = player_white
         self.player_black = player_black
@@ -37,6 +33,7 @@ class Game:
     def play(self):
         """The main game loop - play through each turn until a winner is determined"""
         while True:
+            # TODO improve game end logic with self.board.outcome(). This has statuses for all the various win/draw conditions.
             player = self.get_current_player()
             if self.board.can_claim_draw():
                 print(player.name + " claims draw")
