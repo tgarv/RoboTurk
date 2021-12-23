@@ -1,7 +1,12 @@
-import board
-import neopixel
 import math
 import chess
+
+try:
+	import board
+	import neopixel
+except ModuleNotFoundError:
+	from mock import MockBoard as board
+	from mock import MockNeopixel as neopixel
 
 class LedManager():
 	LIGHTING_TYPE_ALL = 1

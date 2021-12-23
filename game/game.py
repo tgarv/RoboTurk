@@ -18,7 +18,7 @@ class Game:
         self.player_black = player_black
         self.current_turn = 1
         self.board = board if board else chess.Board()
-        self.engine = engine if engine else chess.engine.SimpleEngine.popen_uci(self.STOCKFISH_LOCATION_RPI)
+        self.engine = engine if engine else chess.engine.SimpleEngine.popen_uci(self.STOCKFISH_LOCATION_MACOS)
         self.head = head.Head()
         self.led_manager = led_manager.LedManager()
         self.led_manager.initialize_checkerboard(self.board.piece_map())

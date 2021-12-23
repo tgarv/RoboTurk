@@ -11,7 +11,7 @@ class Player:
     def __init__(self, name, type, difficulty = 1, engine = None):
         self.name = name
         self.type = type
-        self.engine = engine if engine else chess.engine.SimpleEngine.popen_uci(self.STOCKFISH_LOCATION_RPI)
+        self.engine = engine if engine else chess.engine.SimpleEngine.popen_uci(self.STOCKFISH_LOCATION_MACOS)
         self.difficulty = difficulty
         self.engine.configure({"Skill Level": self.difficulty})
 
