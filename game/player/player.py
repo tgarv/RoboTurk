@@ -1,6 +1,6 @@
 import chess.engine
 
-import config
+from config import config
 
 
 class Player:

@@ -1,4 +1,4 @@
-import sensor_space_mapping
+from config import sensor_space_mapping
 import command_queue
 import led_manager
 import server

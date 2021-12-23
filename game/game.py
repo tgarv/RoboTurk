@@ -4,7 +4,7 @@ import head
 import game_configurator
 import led_manager
 import server
-import config
+from config import config
 
 import threading
 

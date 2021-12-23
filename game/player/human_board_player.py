@@ -1,8 +1,8 @@
 import chess
 import chess.engine
-import player
+from player import player
 import command_queue
-import sensor_space_mapping
+from config import sensor_space_mapping
 from led_manager import LedManager
 import time
 

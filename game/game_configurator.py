@@ -1,7 +1,4 @@
-import player
-import human_cli_player
-import computer_player
-import human_board_player
+from player import player, human_cli_player, human_board_player, computer_player
 import game
 
 

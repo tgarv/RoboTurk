@@ -1,5 +1,5 @@
 import chess.engine
-import player
+from player import player
 
 
 class ComputerPlayer(player.Player):

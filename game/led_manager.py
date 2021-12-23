@@ -1,8 +1,7 @@
 import math
 import chess
 
-import led_config
-import config
+from config import led_config, config
 
 if config.get_platform_mode() == config.PLATFORM_MODE_HARDWARE:
     import board  # Raspberry Pi board - only available on raspberry pi hardware
