@@ -29,41 +29,12 @@ class HumanBoardPlayer(player.Player):
             from_square, to_square = self.get_command_from_input_thread(board)
 
             if from_square is None:
-                event = queue.dequeue()
-                if event is None:
-                    continue
-                (board_id, space_id, event_type) = from_square.split(":")
-                if event_type == "occupied":
-                    # If we got an event saying that a piece has been placed, we must have missed an event or something went wrong. Reset.
-                    queue.reset_queue()
-                    from_square = None
-                    # TODO continue here?
-                else:
-                    from_square = sensor_space_mapping.MAPPING.get(
-                        board_id + ":" + space_id, None
-                    )
+                from_square = self.get_square_from_command_queue(queue, "empty")
                 time.sleep(0.25)
 
-        valid_destination_squares = []
-        if led_manager is not None:
-            for legal_move in legal_moves:
-                if from_square == chess.square_name(legal_move.from_square):
-                    valid_destination_squares.append(
-                        chess.square_name(legal_move.to_square)
-                    )
-                    led_manager.illuminate_square(
-                        chess.square_name(legal_move.to_square),
-                        (0, 0, 255),
-                        LedManager.LIGHTING_TYPE_INNER,
-                        False,
-                    )
-            if len(valid_destination_squares) > 0:
-                led_manager.illuminate_square(
-                    chess.square_name(from_square),
-                    (255, 0, 255),
-                    LedManager.LIGHTING_TYPE_INNER,
-                    True,
-                )
+        valid_destination_squares = self.illuminate_valid_moves(
+            led_manager, from_square, legal_moves
+        )
 
         if to_square is None:
             print(
@@ -77,18 +48,7 @@ class HumanBoardPlayer(player.Player):
             if square_1 is not None:
                 to_square = square_1
             else:
-                to_square = queue.dequeue()
-                if to_square is None:
-                    continue
-                (board_id, space_id, event_type) = to_square.split(":")
-                if event_type == "empty":
-                    # If we got an event saying that a piece has been removed, we must have missed an event or something went wrong. Reset.
-                    queue.reset_queue()
-                    to_square = None
-                else:
-                    to_square = sensor_space_mapping.MAPPING.get(
-                        board_id + ":" + space_id, None
-                    )
+                to_square = self.get_square_from_command_queue(queue, "occupied")
 
         move = from_square + to_square
         print("Got move: " + move)
@@ -121,3 +81,42 @@ class HumanBoardPlayer(player.Player):
                 square_1 = terminal_input[:2]
                 square_2 = terminal_input[2:]
         return square_1, square_2
+
+    def get_square_from_command_queue(self, queue, expected_event):
+        event = queue.dequeue()
+        if event is None:
+            return None
+        try:
+            (board_id, space_id, event_type) = event.split(":")
+        except ValueError:
+            # Event doesn't have enough parts
+            return None
+        if event_type != expected_event:
+            # If we got the wrong type of event, we must have missed an event or something went wrong. Reset.
+            queue.reset_queue()
+            return None
+        else:
+            return sensor_space_mapping.MAPPING.get(board_id + ":" + space_id, None)
+
+    def illuminate_valid_moves(self, led_manager, from_square, legal_moves):
+        valid_destination_squares = []
+        if led_manager is not None:
+            for legal_move in legal_moves:
+                if from_square == chess.square_name(legal_move.from_square):
+                    valid_destination_squares.append(
+                        chess.square_name(legal_move.to_square)
+                    )
+                    led_manager.illuminate_square(
+                        chess.square_name(legal_move.to_square),
+                        (0, 0, 255),
+                        LedManager.LIGHTING_TYPE_INNER,
+                        False,
+                    )
+            if len(valid_destination_squares) > 0:
+                led_manager.illuminate_square(
+                    from_square,
+                    (255, 0, 255),
+                    LedManager.LIGHTING_TYPE_INNER,
+                    True,
+                )
+        return valid_destination_squares
