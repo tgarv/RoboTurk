@@ -1,5 +1,7 @@
 import chess
 import chess.engine
+from move_wrapper import MoveWrapper
+from player.player import Player
 import head
 import game_configurator
 import led_manager
@@ -48,33 +50,39 @@ class Game:
 
     def do_turn(self):
         """Handle a single turn for the current player"""
-        player = self.get_current_player()
-        move_complete = False
+        player: Player = self.get_current_player()
+        move_complete: bool = False
         while not move_complete:
-            info = self.engine.analyse(self.board, chess.engine.Limit(time=0.1))
+            info = self.engine.analyse(self.board, chess.engine.Limit(time=0.5))
             print(info["score"])
             print(self.board)
             print(player.name + "'s turn")
-            (move, requires_robot_to_move) = player.get_move(
-                self.board, self.led_manager
-            )
 
-            self.led_manager.initialize_checkerboard(self.board.piece_map())
-            if not move or not (move in self.board.legal_moves):
+            move_wrapper: MoveWrapper = player.get_move(self.board, self.led_manager)
+            move = move_wrapper.move
+
+            if move_wrapper.type == MoveWrapper.TYPE_UNDO:
+                try:
+                    move = self.board.pop()
+                except IndexError:
+                    continue
+                move_complete = True
+                # TODO should undo twice if you're playing a computer player, but then we need to figure out how to highlight that on the board
+            elif not move or not (move in self.board.legal_moves):
                 print("Illegal move - try again")
+                continue
             else:
+                is_capture = self.board.is_capture(move)
+                self.board.push(move)
+                move_complete = True
+
+            if move_complete:
+                self.led_manager.initialize_checkerboard(self.board.piece_map())
                 self.led_manager.illuminate_square(chess.square_name(move.from_square))
+                # TODO use is_capture to highlight captured piece
                 self.led_manager.illuminate_square(
                     chess.square_name(move.to_square), (255, 0, 0)
                 )
-                is_capture = self.board.is_capture(move)
-                if requires_robot_to_move:
-                    # If this move was calculated by the engine or comes from a remote game, then the robot needs to move the piece
-                    self.move_piece(move, is_capture)
-
-                # TODO add undo logic - use self.board.pop() (highlight the move on the board, etc.)
-                self.board.push(move)
-                move_complete = True
 
     def get_current_player(self):
         """
