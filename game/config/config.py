@@ -6,7 +6,10 @@ PLATFORM_MODE_EMULATED = 2
 
 def get_stockfish_location():
     result = subprocess.run(["which", "stockfish"], stdout=subprocess.PIPE)
-    return result.stdout.decode("utf-8").strip("\n")
+    location = result.stdout.decode("utf-8").strip("\n")
+    if location is None or location is "":
+        location = "/usr/games/stockfish"
+    return location
 
 
 def get_platform_mode():
