@@ -29,6 +29,8 @@ class HumanBoardPlayer(player.Player):
             "Move a piece, enter a move, or enter the location of a piece to see all valid moves for that piece"
         )
 
+        led_manager.initialize_checkerboard(board.piece_map())
+
         while from_square is None:
             time.sleep(0.1)
             command = self.get_command_from_input_thread(board)
