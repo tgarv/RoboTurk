@@ -21,7 +21,7 @@ class BoardSpaceConfigurator:
                 all_squares.append(f + str(rank))
         self.all_squares = all_squares
         self.queue = command_queue.CommandQueue()
-        self.led_manager = led_manager.LedManager()
+        self.led_manager = led_manager.LedManager.getInstance()
         threading.Thread(
             target=lambda: server.app.run(host="0.0.0.0", use_reloader=False)
         ).start()

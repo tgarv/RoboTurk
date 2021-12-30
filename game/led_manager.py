@@ -1,4 +1,5 @@
 import math
+import time
 import chess
 
 from config import led_config, config
@@ -16,7 +17,20 @@ class LedManager:
     LIGHTING_TYPE_INNER = 2
     LIGHTING_TYPE_OUTER = 3
 
+    __instance = None
+
+    @staticmethod
+    def getInstance():
+        """Static access method."""
+        if LedManager.__instance == None:
+            LedManager()
+        return LedManager.__instance
+
     def __init__(self):
+        if LedManager.__instance != None:
+            raise Exception("This class is a singleton!")
+        else:
+            LedManager.__instance = self
         self.number_of_leds_per_quadrant = led_config.number_of_leds_per_quadrant
 
         self.pixels = neopixel.NeoPixel(
@@ -96,7 +110,7 @@ class LedManager:
         self.pixels.show()
 
     def illuminate_square(
-        self, square, color=(0, 255, 0), type=2, show_immediately=True
+        self, square, color=(0, 255, 0), type=2, show_immediately=True, duration=None
     ):
         leds = self.leds_for_square[square]
         if leds is None:
@@ -108,8 +122,15 @@ class LedManager:
             indices_to_illuminate = led_config.indices_for_inner_leds
         elif type == self.LIGHTING_TYPE_OUTER:
             indices_to_illuminate = led_config.indices_for_outer_leds
+        previous_value = {}
         for i in indices_to_illuminate:
             led = leds[i]
+            previous_value[led] = self.pixels[led]
             self.pixels[led] = color
         if show_immediately:
             self.pixels.show()
+            if duration is not None:
+                time.sleep(duration)
+                for index, value in previous_value.items():
+                    self.pixels[index] = value
+                self.pixels.show()

@@ -21,7 +21,7 @@ class Game:
             if engine
             else chess.engine.SimpleEngine.popen_uci(config.get_stockfish_location())
         )
-        self.led_manager = led_manager.LedManager()
+        self.led_manager = led_manager.LedManager.getInstance()
         self.led_manager.initialize_checkerboard(self.board.piece_map())
 
         # Head isn't really used, but the code was written when this was planned to be a robotic board

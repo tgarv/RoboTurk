@@ -11,7 +11,7 @@ class BoardSpaceTester:
     def __init__(self):
         self.sensor_space_mapping = sensor_space_mapping.MAPPING
         self.queue = command_queue.CommandQueue()
-        self.led_manager = led_manager.LedManager()
+        self.led_manager = led_manager.LedManager.getInstance()
         threading.Thread(
             target=lambda: server.app.run(host="0.0.0.0", use_reloader=False)
         ).start()
