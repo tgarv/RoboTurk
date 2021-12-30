@@ -1,3 +1,7 @@
+# This was a quick hack to get the server and game talking to each other (from separate threads) that I was going to replace with a thread-safe queue, but it's actually nice to have the file to put
+# commands in for debugging purposes. Consider removing this if we end up with a better debug mode.
+
+
 class CommandQueue:
     FILEPATH = "game/commands.txt"
 
