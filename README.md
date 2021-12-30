@@ -1,6 +1,11 @@
 # RoboTurk
 Ever heard of the "Mechanical Turk"? A box that supposedly played chess by itself, but actually had a human inside of it? Well, this is Robo Turk, a chess board that makes the Mechanical Turk a reality through the power of robotics. (Just kidding, it doesn't have any robotic parts yet, but it does have cool LEDs and sensors)
 
+## Notes
+# outdated: For this to run, you need to have a `sudo hostapdstart` running in another terminal. We also can't access the internet from the pi with this configuration -- need to go into /etc/network/interfaces and comment everything out, then restart for that to work.  
+
+Used the guide at raspberrypi.com/documentation/computers/configuration.html, the section Setting up a Routed Wireless Access Point. Skipped the section about routing and IP Masquerading. Changes to /etc/dhcpcd.conf, /etc/dnsmasq.conf, and /etc/hostapd/hostapd.conf
+
 ## Playing the game
 ```bash
 $ source venv/bin/activate
