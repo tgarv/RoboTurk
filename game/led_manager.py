@@ -111,7 +111,7 @@ class LedManager:
                 )
         self.pixels.show()
 
-    def flash_piece_colors(self, board: chess.Board, duration: float=0.1):
+    def flash_piece_colors(self, board: chess.Board, duration: float=0.25):
         for square_number, piece in board.piece_map().items():
             square_name = chess.SQUARE_NAMES[square_number]
             is_color_1 = piece.color == chess.WHITE
@@ -125,6 +125,7 @@ class LedManager:
                 self.LIGHTING_TYPE_INNER,
                 False,
             )
+            self.pixels.show()
             time.sleep(duration)
             print("Flashing (on) piece at position %s" % (square_name))
             self.illuminate_square(
@@ -133,6 +134,7 @@ class LedManager:
                 self.LIGHTING_TYPE_INNER,
                 False,
             )
+            self.pixels.show()
 
     def illuminate_square(
         self, square, color=(0, 255, 0), type=2, show_immediately=True, duration=None
