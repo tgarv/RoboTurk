@@ -24,3 +24,6 @@ enable-ap:
 	sudo cp /etc/dnsmasq.conf.copy /etc/dnsmasq.conf
 	sudo cp /etc/hostapd/hostapd.conf.copy /etc/hostapd/hostapd.conf
 	echo "Files moved - run sudo systemctl reboot for changes to take effect"
+
+reboot:
+	sudo systemctl reboot
