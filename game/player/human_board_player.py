@@ -32,6 +32,7 @@ class HumanBoardPlayer(player.Player):
         led_manager.initialize_checkerboard(board.piece_map())
 
         while from_square is None:
+            led_manager.flash_piece_colors()
             time.sleep(0.1)
             command = self.get_command_from_input_thread(board)
             if isinstance(command, MoveWrapper):

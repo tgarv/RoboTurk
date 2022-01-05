@@ -16,6 +16,8 @@ class LedManager:
     LIGHTING_TYPE_ALL = 1
     LIGHTING_TYPE_INNER = 2
     LIGHTING_TYPE_OUTER = 3
+    SQUARE_COLOR_LIGHT = (50, 50, 50)
+    SQUARE_COLOR_DARK = (0, 0, 0)
 
     __instance = None
 
@@ -108,6 +110,24 @@ class LedManager:
                     False,
                 )
         self.pixels.show()
+
+    def flash_piece_colors(self, board: chess.Board, duration: float=0.1):
+        for square_number, piece in board.piece_map().items():
+            square_name = chess.SQUARE_NAMES[square_number]
+            is_color_1 = piece.color == board.turn
+            self.illuminate_square(
+                square_name,
+                self.SQUARE_COLOR_DARK,
+                self.LIGHTING_TYPE_INNER,
+                False,
+            )
+            time.sleep(duration)
+            self.illuminate_square(
+                square_name,
+                self.piece_color_1 if is_color_1 else self.piece_color_2,
+                self.LIGHTING_TYPE_INNER,
+                False,
+            )
 
     def illuminate_square(
         self, square, color=(0, 255, 0), type=2, show_immediately=True, duration=None
