@@ -124,8 +124,8 @@ class LedManager:
                 self.LIGHTING_TYPE_INNER,
                 False,
             )
-            self.pixels.show()
-            time.sleep(duration)
+        self.pixels.show()
+        time.sleep(duration)
         
         for square_number, piece in board.piece_map().items():
             square_name = chess.SQUARE_NAMES[square_number]
@@ -139,7 +139,7 @@ class LedManager:
                 self.LIGHTING_TYPE_INNER,
                 False,
             )
-            self.pixels.show()
+        self.pixels.show()
 
     def illuminate_square(
         self, square, color=(0, 255, 0), type=2, show_immediately=True, duration=None
