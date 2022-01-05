@@ -32,7 +32,7 @@ def update_positions():
         square = sensor_space_mapping.MAPPING.get(board_id + ":" + space_id, None)
         if square is not None:
             led_manager.illuminate_square(
-                square, (100, 100, 100), show_immediately=True, duration=5
+                square, (100, 100, 0), type=LedManager.LIGHTING_TYPE_ALL, show_immediately=True, duration=0.25
             )
 
     return "done"
