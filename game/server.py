@@ -9,7 +9,7 @@ from config import sensor_space_mapping
 
 app = Flask(__name__)
 
-
+# TODO replace this whole server with a thread that's just monitoring the board hardware
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
