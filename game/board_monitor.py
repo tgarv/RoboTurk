@@ -49,6 +49,9 @@ class BoardMonitor():
 						self.queue.enqueue(f"{mcp_number}:{pin_number}:{pin_value}")
 					state[mcp_number][pin_number] = pin_value
 
-if __name__ == "__main__":
+def run():
 	monitor = BoardMonitor()
 	monitor.run()
+
+if __name__ == "__main__":
+	run()

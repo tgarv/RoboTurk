@@ -1,7 +1,7 @@
 from config import sensor_space_mapping
 import command_queue
 import led_manager
-import server
+import board_monitor
 
 import threading
 import time
@@ -23,7 +23,7 @@ class BoardSpaceConfigurator:
         self.queue = command_queue.CommandQueue()
         self.led_manager = led_manager.LedManager.getInstance()
         threading.Thread(
-            target=lambda: server.app.run(host="0.0.0.0", use_reloader=False)
+            target=lambda: board_monitor.run()
         ).start()
 
     def configure_board_squares(self, spaces=None):
@@ -82,7 +82,8 @@ class BoardSpaceConfigurator:
         write_to_file = input("Write new mapping to file?")
         if write_to_file == "yes":
             with open(
-                os.path.join(os.path.dirname(__file__), "sensor_space_mapping.json"),
+            # TODO this wrote to the wrong file?
+                os.path.join(os.path.dirname(__file__), "config/sensor_space_mapping.json"),
                 "w",
             ) as file:
                 json.dump(new_mapping, file)

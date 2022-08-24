@@ -12,6 +12,9 @@ configure:
 
 test:
 	sudo python3 game/board_space_tester.py
+	
+test2:
+	sudo python3 game/board_space_tester_i2c.py
 
 disable-ap:
 	sudo mv /etc/dhcpcd.conf /etc/dhcpcd.conf.copy
