@@ -14,11 +14,13 @@ i2c = busio.I2C(board.SCL, board.SDA)
 mcp0 = MCP23017(i2c, address=0x20)
 mcp1 = MCP23017(i2c, address=0x21)
 mcp2 = MCP23017(i2c, address=0x22)
-mcps = [mcp0, mcp1, mcp2]
+mcp3 = MCP23017(i2c, address=0x23)
+mcps = [mcp0, mcp1, mcp2, mcp3]
 
 state = [[0 for i in range(16)] for i in range(4)]
 
 class BoardMonitor():
+	board_state = {}
 	def __init__(self):
 		self.queue = command_queue.CommandQueue()
 
@@ -35,6 +37,7 @@ class BoardMonitor():
 					pin = mcp.get_pin(pin_number)
 					pin_value = "occupied" if pin.value == False else "empty"
 					state[mcp_number][pin_number] = pin_value
+					BoardMonitor.board_state[f"{mcp_number}:{pin_number}"] = pin_value
 
 	def run(self):
 		while True:
@@ -48,6 +51,7 @@ class BoardMonitor():
 						print(f"Enqueuing {mcp_number}:{pin_number}:{pin_value}")
 						self.queue.enqueue(f"{mcp_number}:{pin_number}:{pin_value}")
 					state[mcp_number][pin_number] = pin_value
+					BoardMonitor.board_state[f"{mcp_number}:{pin_number}"] = pin_value
 
 def run():
 	monitor = BoardMonitor()

@@ -167,3 +167,6 @@ class LedManager:
                     self.pixels[index] = value
                 self.pixels.show()
                 # TODO consider a lock on the LedManager. When we highlight a placed piece, but that piece completes a move, the move animation and the highlight animation interact weirdly
+                
+    def show(self):
+        self.pixels.show()
