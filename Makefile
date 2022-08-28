@@ -9,9 +9,9 @@ clear:
 
 configure:
 	sudo python3 game/board_space_configurator.py $(spaces)
-
+	
 test:
-	sudo python3 game/board_space_tester.py
+	sudo python3 game/board_space_tester_i2c.py
 
 disable-ap:
 	sudo mv /etc/dhcpcd.conf /etc/dhcpcd.conf.copy

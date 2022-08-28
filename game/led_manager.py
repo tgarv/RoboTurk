@@ -5,6 +5,7 @@ import chess
 from config import led_config, config
 
 if config.get_platform_mode() == config.PLATFORM_MODE_HARDWARE:
+    print("On a real board")
     import board  # Raspberry Pi board - only available on raspberry pi hardware
     import neopixel  # Adafruit neopixel library - only available on raspberry pi hardware
 else:
@@ -109,6 +110,7 @@ class LedManager:
                     self.LIGHTING_TYPE_INNER,
                     False,
                 )
+        print("Showing")
         self.pixels.show()
 
     def flash_piece_colors(self, board: chess.Board, duration: float=0.25):
@@ -167,3 +169,6 @@ class LedManager:
                     self.pixels[index] = value
                 self.pixels.show()
                 # TODO consider a lock on the LedManager. When we highlight a placed piece, but that piece completes a move, the move animation and the highlight animation interact weirdly
+                
+    def show(self):
+        self.pixels.show()

@@ -1,14 +1,13 @@
 from typing import Tuple, Union
 import chess
 import chess.engine
-from command_queue import CommandQueue
 from move_wrapper import MoveWrapper
 from player import player
-import command_queue
 from config import sensor_space_mapping
 from led_manager import LedManager
 import time
 from input_thread import InputThread, bufferLock, inputBuffer
+from board_monitor import BoardMonitor
 
 
 class HumanBoardPlayer(player.Player):
@@ -17,8 +16,7 @@ class HumanBoardPlayer(player.Player):
     ) -> MoveWrapper:
         # TODO how to pass an "undo" action back up to the game? :thinking:
         legal_moves: chess.LegalMoveGenerator = board.legal_moves
-        queue: CommandQueue = command_queue.CommandQueue()
-        queue.reset_queue()  # TODO not sure this is a good idea
+        BoardMonitor.reset_pending_actions()  # TODO not sure this is a good idea
         from_square: str = None
         to_square: str = None
 
@@ -47,7 +45,7 @@ class HumanBoardPlayer(player.Player):
                 from_square, to_square = command
 
             if from_square is None:
-                from_square = self.get_square_from_command_queue(queue, "empty")
+                from_square = self.get_square_from_command_queue("empty")
                 time.sleep(0.25)
 
         valid_destination_squares = self.illuminate_valid_moves(
@@ -71,7 +69,7 @@ class HumanBoardPlayer(player.Player):
             if square_1 is not None:
                 to_square = square_1
             else:
-                to_square = self.get_square_from_command_queue(queue, "occupied")
+                to_square = self.get_square_from_command_queue("occupied")
 
         move = from_square + to_square
         print("Got move: " + move)
@@ -110,8 +108,8 @@ class HumanBoardPlayer(player.Player):
                 square_2 = terminal_input[2:]
         return square_1, square_2
 
-    def get_square_from_command_queue(self, queue: CommandQueue, expected_event: str):
-        event = queue.dequeue()
+    def get_square_from_command_queue(self, expected_event: str):
+        event = BoardMonitor.get_pending_action()
         if event is None:
             return None
         try:
@@ -121,7 +119,7 @@ class HumanBoardPlayer(player.Player):
             return None
         if event_type != expected_event:
             # If we got the wrong type of event, we must have missed an event or something went wrong. Reset.
-            queue.reset_queue()
+            BoardMonitor.reset_pending_actions()
             return None
         else:
             return sensor_space_mapping.MAPPING.get(board_id + ":" + space_id, None)
