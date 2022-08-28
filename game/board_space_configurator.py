@@ -1,5 +1,4 @@
 from config import sensor_space_mapping
-import command_queue
 import led_manager
 import board_monitor
 
@@ -20,7 +19,6 @@ class BoardSpaceConfigurator:
             for f in files:
                 all_squares.append(f + str(rank))
         self.all_squares = all_squares
-        self.queue = command_queue.CommandQueue()
         self.led_manager = led_manager.LedManager.getInstance()
         threading.Thread(
             target=lambda: board_monitor.run()
@@ -34,7 +32,7 @@ class BoardSpaceConfigurator:
         for square in spaces:
             self.led_manager.initialize_checkerboard()
             self.led_manager.illuminate_square(square)
-            self.queue.reset_queue()
+            board_monitor.BoardMonitor.reset_pending_actions()
             current_value = self.sensor_space_mapping.get(
                 square, "TODO"
             )  # TODO this is wrong, the dict is the other way around
@@ -47,11 +45,11 @@ class BoardSpaceConfigurator:
                 input_value = None
                 attempts_remaining = 20
                 while input_value is None and attempts_remaining > 0:
-                    self.queue.reset_queue()
+                    board_monitor.BoardMonitor.reset_pending_actions()
                     attempts_remaining -= 1
                     # TODO store previous, and if the new one is the same as the previous then skip it (it's likely due to bounce or a misplaced piece)
                     time.sleep(0.25)
-                    input_value = self.queue.dequeue()
+                    input_value = board_monitor.BoardMonitor.get_pending_action()
                     if input_value is None:
                         continue
                     (board_id, space_id, event_type) = input_value.split(":")
@@ -65,7 +63,7 @@ class BoardSpaceConfigurator:
                     if user_input == "skip":
                         break
                     else:
-                        self.queue.reset_queue()
+                        board_monitor.BoardMonitor.reset_pending_actions()
                         continue
                 else:
                     square_value = board_id + ":" + space_id

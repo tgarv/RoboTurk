@@ -5,7 +5,7 @@ from player.player import Player
 import head
 import game_configurator
 import led_manager
-import server
+import board_monitor
 from config import config
 
 import threading
@@ -27,9 +27,9 @@ class Game:
         # Head isn't really used, but the code was written when this was planned to be a robotic board
         self.head = head.Head()
 
-        # Start a thread with the web server - this should probably be handled a different way, but :shrug:
+        # Start a thread with the board monitor
         threading.Thread(
-            target=lambda: server.app.run(host="0.0.0.0", use_reloader=False)
+            target=lambda: board_monitor.run()
         ).start()
 
     def play(self):

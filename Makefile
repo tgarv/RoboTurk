@@ -9,11 +9,8 @@ clear:
 
 configure:
 	sudo python3 game/board_space_configurator.py $(spaces)
-
-test:
-	sudo python3 game/board_space_tester.py
 	
-test2:
+test:
 	sudo python3 game/board_space_tester_i2c.py
 
 disable-ap:

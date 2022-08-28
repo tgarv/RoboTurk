@@ -4,12 +4,10 @@ import board
 import busio
 import digitalio
 
-import command_queue
-
 from adafruit_mcp230xx.mcp23017 import MCP23017
 
 
-# Initialize the I2C bus:
+# Initialize the I2C devices:
 i2c = busio.I2C(board.SCL, board.SDA)
 mcp0 = MCP23017(i2c, address=0x20)
 mcp1 = MCP23017(i2c, address=0x21)
@@ -21,9 +19,8 @@ state = [[0 for i in range(16)] for i in range(4)]
 
 class BoardMonitor():
 	board_state = {}
+	pending_actions = []
 	def __init__(self):
-		self.queue = command_queue.CommandQueue()
-
 		for mcp_number in range(len(mcps)):
 			mcp = mcps[mcp_number]
 			for pin_number in range(16):
@@ -48,10 +45,19 @@ class BoardMonitor():
 					pin = mcp.get_pin(pin_number)
 					pin_value = "occupied" if pin.value == False else "empty"
 					if pin_value != state[mcp_number][pin_number]:
-						print(f"Enqueuing {mcp_number}:{pin_number}:{pin_value}")
-						self.queue.enqueue(f"{mcp_number}:{pin_number}:{pin_value}")
+						BoardMonitor.pending_actions.append(f"{mcp_number}:{pin_number}:{pin_value}")
 					state[mcp_number][pin_number] = pin_value
 					BoardMonitor.board_state[f"{mcp_number}:{pin_number}"] = pin_value
+	
+	def get_pending_action():
+		try:
+			return BoardMonitor.pending_actions.pop()
+		except IndexError:
+			return None
+	
+	def reset_pending_actions():
+		BoardMonitor.pending_actions = []
+	
 
 def run():
 	monitor = BoardMonitor()
